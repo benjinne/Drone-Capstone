@@ -1,0 +1,32 @@
+
+# feature
+feature MOTOR_STOP
+feature GPS
+feature DASHBOARD
+feature PWM_OUTPUT_ENABLE
+
+# aux
+aux 0 0 0 1300 2100
+aux 1 1 1 1300 2100
+aux 2 3 2 1300 1700
+aux 3 9 2 1300 1700
+aux 4 19 2 1725 2100
+aux 5 27 1 1750 2100
+aux 6 28 5 1300 2100
+aux 7 11 3 1300 2100
+
+# master
+set acc_hardware = MPU6000
+set mag_hardware = NONE
+set baro_hardware = BMP280
+set pitot_hardware = NONE
+set serialrx_provider = FPORT
+set serialrx_inverted = ON
+set serialrx_halfduplex = ON
+set min_throttle = 1080
+set max_throttle = 1950
+set motor_pwm_rate = 1000
+set motor_pwm_protocol = ONESHOT125
+set platform_type = AIRPLANE
+#THIS IS OPTIONAL
+#set nav_extra_arming_safety = OFF
