@@ -1,3 +1,4 @@
+#this script takes images periodically, and modifies exif headers with dummy data.
 import time
 import serial
 
@@ -9,14 +10,16 @@ ser = serial.Serial(
         bytesize=serial.EIGHTBITS,
         #timeout=1
 )
-altitude = 0
-longitude = 0
-latitude = 0
+active = 1  #if we want to take a picture from the safebit (data is valid)
+
 start = time.time()
 while 1:
-        #x=ser.read()
-        #print(x)
+    x=ser.read()
+    #print(x)
+    if x == b'$':
+        print("true")
+    
     end = time.time()
-    if end - start > 5:
+    if end - start > 5 and active == 1:
         print(end - start)
         start = time.time()
