@@ -2,7 +2,7 @@
 import time
 import serial
 
-def DegreesToStuff(degrees):
+def D2M(degrees):
     negative = False
     if degrees < 0:
         negative = True
@@ -16,9 +16,9 @@ def DegreesToStuff(degrees):
     if negative == True:
         deg = deg * -1
     
-    print(deg)
-    print(min)
-    print(sec)
+    #print(deg)
+    #print(min)
+    #print(sec)
     
     return (deg,min,sec)
 
@@ -54,32 +54,32 @@ while 1:
                 Lat4=ser.read().hex()
                 Lat = twos_complement(Lat4 + Lat3 + Lat2 + Lat1,32)/10000000
                 print(Lat)
+                print(D2M(Lat))
                 
                 #Longitude
                 Long1=ser.read().hex()
                 Long2=ser.read().hex()
                 Long3=ser.read().hex()
                 Long4=ser.read().hex()
-                Long = Long4 + Long3+ Long2 + Long1
-                print(twos_complement(Long, 32)/10000000)
+                Long = twos_complement(Long4 + Long3+ Long2 + Long1, 32)/10000000
+                print(Long)
+                print(D2M(Long))
                 
-                ser.read() #ignoring ground speed
+                x = ser.read() #ignoring ground speed
+                #print(x.hex())
                 
                 #Altitude
-                x=ser.read()
-                print(x)
-                Alt1=int.from_bytes(x, byteorder='big')
-                print("alt 1: " + str(Alt1))
-                x=ser.read()
-                print(x)
-                Alt2=int.from_bytes(x, byteorder='big')
-                print("alt 2: " + str(Alt2))
-                x=ser.read()
-                print(x)
-                Alt3=int.from_bytes(x, byteorder='big')
-                print("alt 3: " + str(Alt3))
-                x=ser.read()
-                print(x)
-                Alt4=int.from_bytes(x, byteorder='big')
-                print("alt 4: " + str(Alt4))
+                Alt1=ser.read().hex()
+                print(Alt1)
+                Alt2=ser.read().hex()
+                print(Alt2)
+                Alt3=ser.read().hex()
+                print(Alt3)
+                Alt4=ser.read().hex()
+                print(Alt4)
+                Alt = twos_complement(Alt4 + Alt3 + Alt2 + Alt1, 32)/100
+                print(Alt)
+                
+                x = ser.read() #ignoring ground speed
+                #print(x.hex())
     
