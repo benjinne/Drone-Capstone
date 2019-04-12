@@ -1,7 +1,13 @@
 #this script practices analysis of controller data.  Reads, interprets, and prints what is input
-import time
 import serial
 from geopy import distance
+from picamera import PiCamera
+
+#for oled:
+import Adafruit_SSD1306
+from PIL import Image
+from PIL import ImageDraw
+from PIL import ImageFont
 
 def D2M(degrees):
     negative = False
@@ -37,12 +43,33 @@ ser = serial.Serial(
         #timeout=1
 )
 
-start = time.time()
+##########################setupOLED
+RST = None     # on the PiOLED this pin isnt used
+disp = Adafruit_SSD1306.SSD1306_128_32(rst=RST)
+disp.begin()
+disp.clear()
+disp.display()
+width = disp.width
+height = disp.height
+image = Image.new('1', (width, height))
+draw = ImageDraw.Draw(image)
+draw.rectangle((0,0,width,height), outline=0, fill=0)
+padding = -2
+top = padding
+bottom = height-padding
+x = 0
+font = ImageFont.load_default()
+################################
+
+
 
 #initializing all necessary variables to 0
-AFrame, pitch, roll, heading, GFrame, lat, lon, groundSpeed, altitude, sats, points, distanceTraveled, point1, point2 = (0,)*14
+AFrame, pitch, roll, heading, GFrame, lat, lon, groundSpeed, altitude, sats, points, distanceTraveled, point1, point2, imgNum = (0,)*15
 
 distanceThreshold = 10 #meters
+
+f = open("data.txt", "a")
+camera = PiCamera()
 
 while 1:
     x=ser.read()
@@ -62,34 +89,52 @@ while 1:
                 #print 'roll:    ', roll
                 #print 'heading: ', heading
             elif x == b'G':
-                print('gpsFrame')
+                #print('gpsFrame')
                 GFrame        = [ord(x) for x in ser.read(14)]
-                lat           = twos_complement(GFrame[0] + (GFrame[1] << 8) + (GFrame[2] << 16) + (GFrame[3] << 32), 32)/10000000
-                lon           = twos_complement(GFrame[4] + (GFrame[5] << 8) + (GFrame[6] << 16) + (GFrame[7] << 32), 32)/10000000
+                lat           = twos_complement(GFrame[0] + (GFrame[1] << 8) + (GFrame[2] << 16) + (GFrame[3] << 24), 32)/10000000
+                lon           = twos_complement(GFrame[4] + (GFrame[5] << 8) + (GFrame[6] << 16) + (GFrame[7] << 24), 32)/10000000
                 groundSpeed   = GFrame[8]
-                altitude      = twos_complement(GFrame[9] + (GFrame[10] << 8) + (GFrame[11] << 16) + (GFrame[12] << 32), 32)
+                altitude      = twos_complement(GFrame[9] + (GFrame[10] << 8) + (GFrame[11] << 16) + (GFrame[12] << 24), 32)
                 sats          = GFrame[13]
                 
-                print 'lat           :', lat
+                #print 'lat           :', lat
                 #print D2M(lat)
-                print 'lon:          :', lon
+                #print 'lon:          :', lon
                 #print D2M(lon)
                 #print 'groundSpeed   :', groundSpeed
                 #print 'altitude      :', altitude
                 #print 'sats          :', sats
                 
-                points += 1
-                if points == 1:
+                if points == 0:
                     point1 = (lat, lon)
-                if points == 2:
-                    points = 0
+					points += 1
+                else:
                     point2 = (lat, lon)
                     distanceTraveled = distanceTraveled + distance.distance(point1, point2).m #meters
-                    print 'traveled: ', distanceTraveled, ' meters'
+                    #print 'traveled: ', distanceTraveled, ' meters'
+					point1 = point2
+					
+					#update OLED
+                    draw.rectangle((0,0,width,height), outline=0, fill=0)
+                    draw.text((x, top),       "Sats: " + str(sats),  font=font, fill=255)
+                    draw.text((x, top+8),     "Dist: " + str(distanceTraveled), font=font, fill=255)
+                    #draw.text((x, top+16),    str(MemUsage),  font=font, fill=255)
+                    #draw.text((x, top+25),    str(Disk),  font=font, fill=255)
+                    disp.image(image)
+                    disp.display()
+					
                     if distanceTraveled >= distanceThreshold:
                         distance = 0
-                        #take picture
-                    
-                    
-                    
-                    
+						#take picture
+						imgNum += 1
+						imgName = 'IMG_' + str(imgNum) + '.jpg,'
+						camera.capture(imgName)
+						#update data file with coordinates and altitude as shown here: https://support.pix4d.com/hc/en-us/articles/202558539-Input-Files#labelA1_1
+						f.write(imgName, str(lat) + ',', str(lon) + ',', str(altitude))
+						
+						
+						
+						
+						
+						
+						
