@@ -84,9 +84,19 @@ while 1:
                 roll    = twos_complement(AFrame[2] + (AFrame[3] << 8), 16)
                 heading = twos_complement(AFrame[4] + (AFrame[5] << 8), 16)
                 
-                print 'pitch:   ', pitch
-                print 'roll:    ', roll
-                print 'heading: ', heading
+                #update OLED
+                draw.rectangle((0,0,width,height), outline=0, fill=0)
+                
+                draw.text((0, top),       "pitch : " + str(pitch),  font=font, fill=255)
+                draw.text((0, top+8),     "roll  : " + str(roll), font=font, fill=255)
+                draw.text((0, top+16),    "head  : " + str(heading),  font=font, fill=255)
+                #draw.text((0, top+25),    "Pitch: " + str(pitch),  font=font, fill=255)
+                disp.image(image)
+                disp.display()
+                
+                #print 'pitch:   ', pitch
+                #print 'roll:    ', roll
+                #print 'heading: ', heading
             elif x == b'G':
                 #print('gpsFrame')
                 GFrame        = [ord(x) for x in ser.read(14)]
@@ -115,14 +125,14 @@ while 1:
                     point1 = point2
 					
                     #update OLED
-                    draw.rectangle((0,0,width,height), outline=0, fill=0)
+                    #draw.rectangle((0,0,width,height), outline=0, fill=0)
                     
-                    draw.text((0, top),       "Sats : " + str(sats),  font=font, fill=255)
-                    draw.text((0, top+8),     "Dist : " + str(distanceTraveled), font=font, fill=255)
-                    draw.text((0, top+16),    "Fix  : " + str(satsFix),  font=font, fill=255)
-                    draw.text((0, top+25),    "Pitch: " + str(pitch),  font=font, fill=255)
-                    disp.image(image)
-                    disp.display()
+                    #draw.text((0, top),       "Sats : " + str(sats),  font=font, fill=255)
+                    #draw.text((0, top+8),     "Dist : " + str(distanceTraveled), font=font, fill=255)
+                    #draw.text((0, top+16),    "Fix  : " + str(satsFix),  font=font, fill=255)
+                    #draw.text((0, top+25),    "Pitch: " + str(pitch),  font=font, fill=255)
+                    #disp.image(image)
+                    #disp.display()
 					
                     if distanceTraveled >= distanceThreshold:
                         distanceTraveled = 0
