@@ -28,5 +28,6 @@ set max_throttle = 1950
 set motor_pwm_rate = 1000
 set motor_pwm_protocol = ONESHOT125
 set platform_type = AIRPLANE
+
 #THIS IS OPTIONAL
 #set nav_extra_arming_safety = OFF
