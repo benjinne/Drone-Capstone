@@ -1,11 +1,14 @@
+#Spring 2019, Ben Linne
+#Does not setup everything. Still need to: setup servo-mixing, calibrate voltage+current sensors, and must calibrate ESC
 
 # feature
-feature MOTOR_STOP
-feature GPS
-feature DASHBOARD
-feature PWM_OUTPUT_ENABLE
+feature MOTOR_STOP        # Prevents motor from spinning while armed
+feature GPS               # Enables GPS
+feature DASHBOARD         # 
+feature PWM_OUTPUT_ENABLE # PWM is used for servos
 
-# aux
+# aux, this sets up channels in the modes tab. This should stay consistent between all wings,
+# so that once a transmitter is setup it can be easily used for any wing
 aux 0 0 0 1300 2100
 aux 1 1 1 1300 2100
 aux 2 3 2 1300 1700
@@ -16,18 +19,16 @@ aux 6 28 5 1300 2100
 aux 7 11 3 1300 2100
 
 # master
-set acc_hardware = MPU6000
-set mag_hardware = NONE
-set baro_hardware = BMP280
-set pitot_hardware = NONE
-set serialrx_provider = FPORT
-set serialrx_inverted = ON
-set serialrx_halfduplex = ON
-set min_throttle = 1080
-set max_throttle = 1950
-set motor_pwm_rate = 1000
-set motor_pwm_protocol = ONESHOT125
-set platform_type = AIRPLANE
+set acc_hardware = MPU6000          # accelerometer used for level flying modes
+set mag_hardware = NONE             # no compass is needed on fixed-wings
+set baro_hardware = BMP280          # barometer used for measuring altitude
+set serialrx_provider = FPORT       # Set reciever communication protocol
+set serialrx_inverted = ON          # needed for FPORT to work
+set serialrx_halfduplex = ON        # needed for FPORT to work
+set min_throttle = 1080             # Needs to be slightly above 1000 for motor to always overcome friction
+set motor_pwm_protocol = ONESHOT125 # Best ESC protocol. Do not use DSHOT, see here: https://www.youtube.com/watch?v=TVkBNhii9sw
+set platform_type = AIRPLANE        # Needed for Fixed-Wings
 
 #THIS IS OPTIONAL
-#set nav_extra_arming_safety = OFF
+#set nav_extra_arming_safety = OFF  #allows drone to be armed when a saftey condition is missing,
+                                    #such as when the gps doesn't have enough satellites
