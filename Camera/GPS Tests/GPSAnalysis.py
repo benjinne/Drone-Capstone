@@ -1,4 +1,6 @@
-#this script practices analysis of controller data.  Reads, interprets, and prints what is input
+#This script collects data from the flight controller using LTM telemetry, more found here: https://github.com/iNavFlight/inav/wiki/Lightweight-Telemetry-(LTM)
+#Using the telemetry data, it takes images every time the distance threshold has been accumulated by distance traveled
+#It also stores additional info in a txt file which can be imported by pix4d
 import serial
 from geopy import distance
 from picamera import PiCamera
